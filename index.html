@@ -1,125 +1,75 @@
 <!DOCTYPE html>
 <html lang="pt-br">
+
 <head>
-<meta charset="UTF-8">
-<link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-<link rel="stylesheet" href="styles.css">
-<title>Calculadora de Luz Ceee</title>
-
+    <meta charset="UTF-8">
+    <title>Calculadora de Luz Ceee</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
 </head>
-<body>
 
-<h2>Calculadora Ceee Thiago</h2>
+<body class="bg-dark">
 
-<label for="data_leitura">Data da Leitura:</label>
-<input type="date" id="data_leitura"><br><br>    
+    <div class="container mt-5">
 
-<label for="leitura_anterior">Leitura Anterior:</label>
-<input type="number" id="leitura_anterior"><br><br>
+        <div class="calculator-container">
+            <h2>Calculadora Ceee Thiago</h2>
 
-<label for="leitura_atual">Leitura Atual:</label>
-<input type="number" id="leitura_atual"><br><br>
+            <form>
+                <div class="form-group">
+                    <label for="data_leitura">Data da Leitura:</label>
+                    <input type="date" id="data_leitura" class="form-control">
+                </div>
 
-<label for="taxa">Taxa (em R$):</label>
-<input type="number" id="taxa"><br><br>
+                <div class="form-group">
+                    <label for="leitura_anterior">Leitura Anterior:</label>
+                    <input type="number" id="leitura_anterior" class="form-control">
+                </div>
 
-<label for="taxa_iluminacao">Taxa de Iluminação (1-30%):</label>
-<input type="number" id="taxa_iluminacao" min="1" max="30" value="0"><br><br>
+                <div class="form-group">
+                    <label for="leitura_atual">Leitura Atual:</label>
+                    <input type="number" id="leitura_atual" class="form-control">
+                </div>
 
-<label for="selecionar_quarto">Selecionar Quarto/JK:</label>
-<select id="selecionar_quarto" onchange="atualizarWhatsApp()">
-    <option value="Vazio">Selecione uma opção</option>
-    <option value="Thiago, 5551993321922">Casa</option>
-  
-</select>
-<p id="nome_pessoa"></p><br><br>
+                <div class="form-group">
+                    <label for="taxa">Taxa (em R$):</label>
+                    <input type="number" id="taxa" class="form-control">
+                </div>
 
-<label for="whatsapp">WhatsApp (com DDD):</label>
-<input type="text" id="whatsapp"><br><br>
+                <div class="form-group">
+                    <label for="taxa_iluminacao">Taxa de Iluminação (1-30%):</label>
+                    <input type="number" id="taxa_iluminacao" min="1" max="30" value="0" class="form-control">
+                </div>
 
-<button onclick="calcularEEnviar()">Calcular e Enviar</button>
-<button onclick="enviarParaPlanilha()">Enviar para Planilha</button>
-<button onclick="window.location.href = 'calcula-gasto.html';">Ir para Calcula Gasto</button>
-<button onclick="limparDados()">Limpar Dados</button>
+                <div class="form-group">
+                    <label for="selecionar_quarto">Selecionar Quarto/JK:</label>
+                    <select id="selecionar_quarto" class="form-control" onchange="atualizarWhatsApp()">
+                        <option value="Vazio">Selecione uma opção</option>
+                        <option value="Thiago, 5551993321922">Casa</option>
+                    </select>
+                    <p id="nome_pessoa"></p>
+                </div>
 
-<p>Resultado:</p>
-<p><span id="nome_pessoa_display"></span></p>
-<p><span id="resultado_display"></span></p>
+                <div class="form-group">
+                    <label for="whatsapp">WhatsApp (com DDD):</label>
+                    <input type="text" id="whatsapp" class="form-control">
+                </div>
 
-<script>
-    function calcularResultado() {
-        let leituraAnterior = parseFloat(document.getElementById('leitura_anterior').value);
-        let leituraAtual = parseFloat(document.getElementById('leitura_atual').value);
-        let taxa = parseFloat(document.getElementById('taxa').value);
-        let taxaIluminacao = parseFloat(document.getElementById('taxa_iluminacao').value) / 100; // Convertendo a porcentagem para decimal
-        let consumoSemTaxaIluminacao = leituraAtual - leituraAnterior;
+                <button onclick="calcularEEnviar()" class="btn btn-primary btn-block">Calcular e Enviar</button>
+                <button onclick="enviarParaPlanilha()" class="btn btn-success btn-block">Enviar para Planilha</button>
+                <button onclick="window.location.href = 'calcula-gasto.html';" class="btn btn-info btn-block">Ir para Calcula Gasto</button>
+                <button onclick="limparDados()" class="btn btn-danger btn-block">Limpar Dados</button>
 
-        // Ajuste no cálculo conforme sua especificação
-        let resultado = consumoSemTaxaIluminacao + (consumoSemTaxaIluminacao * taxaIluminacao) + taxa;
+                <p class="mt-3">Resultado:</p>
+                <p><span id="nome_pessoa_display"></span></p>
+                <p><span id="resultado_display"></span></p>
+            </form>
+        </div>
 
-        return resultado;
-    }
+    </div>
 
-    function atualizarWhatsApp() {
-        let selecionado = document.getElementById("selecionar_quarto").value;
-        let partes = selecionado.split(", ");
-        document.getElementById("whatsapp").value = partes[1];
-        document.getElementById("nome_pessoa").textContent = partes[0];
-    }
-
-    function calcularEEnviar() {
-        let resultado = calcularResultado();
-        let dataLeitura = document.getElementById('data_leitura').value;
-        let dataFormatada = new Date(dataLeitura).toLocaleDateString('pt-BR');
-        let whatsapp = document.getElementById('whatsapp').value;
-
-        window.open(`https://wa.me/${whatsapp}?text=Olá ${document.getElementById("nome_pessoa").textContent}, a leitura feita em ${dataFormatada} fechou em: R$ ${resultado.toFixed(2)}`, '_blank');
-    }
-
-    function enviarParaPlanilha() {
-    let dataLeitura = document.getElementById('data_leitura').value;
-    let dataFormatada = new Date(dataLeitura).toLocaleDateString('pt-BR');
-
-    let dados = {
-        "Nome": document.getElementById('nome_pessoa').textContent,
-        "Data da Leitura": dataFormatada,  // Incluindo a data da leitura formatada
-        "Leitura Anterior": parseFloat(document.getElementById('leitura_anterior').value),
-        "Leitura Atual": parseFloat(document.getElementById('leitura_atual').value),
-        "Taxa": parseFloat(document.getElementById('taxa').value),
-        "Taxa de Iluminação": parseFloat(document.getElementById('taxa_iluminacao').value),
-        "Resultado": calcularResultado().toFixed(2)
-    };
-
-    fetch("https://sheet.best/api/sheets/fc75e974-8d6f-47db-a588-9c10cce3af8f", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify(dados)
-    })
-    .then(response => response.json())
-    .then(data => {
-        alert("Dados enviados para a planilha com sucesso!");
-    })
-    .catch(error => {
-        alert("Erro ao enviar dados para a planilha.");
-    });
-}
-
-
-    function limparDados() {
-        document.getElementById('leitura_anterior').value = "";
-        document.getElementById('leitura_atual').value = "";
-        document.getElementById('taxa').value = "";
-        document.getElementById('taxa_iluminacao').value = "0";
-        document.getElementById('selecionar_quarto').selectedIndex = 0;
-        document.getElementById('whatsapp').value = "";
-        document.getElementById('data_leitura').value = "";
-        document.getElementById('nome_pessoa').textContent = "";
-        document.getElementById('nome_pessoa_display').textContent = "";
-        document.getElementById('resultado_display').textContent = "";
-    }
-</script>
+    <script src="seu-arquivo-javascript.js"></script> <!-- Adicione aqui o caminho para o seu arquivo JavaScript -->
 
 </body>
+
 </html>
